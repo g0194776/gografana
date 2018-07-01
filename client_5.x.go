@@ -16,6 +16,15 @@ type GrafanaClient_5_0 struct {
 	client       *http.Client
 }
 
+type NewDashboardError struct {
+	Err    error
+	Status string
+}
+
+func (e NewDashboardError) Error() string {
+	return fmt.Sprintf("Internal Error: %s, Status: %s", e.Err.Error(), e.Status)
+}
+
 func (gc *GrafanaClient_5_0) initClient() {
 	if gc.client != nil {
 		return
@@ -48,7 +57,7 @@ func (gc *GrafanaClient_5_0) IsBoardExists(title string) (bool, *Board, error) {
 	}
 	for _, v := range boards {
 		if v.Title == title {
-			return false, &v, nil
+			return true, &v, nil
 		}
 	}
 	return false, nil, nil
@@ -77,7 +86,8 @@ func (gc *GrafanaClient_5_0) NewDashboard(board *Board, folderId uint, overwrite
 		return board, fmt.Errorf("Unmarshal response body failed while calling to API NewDashboard(api/dashboards/db), error: %s", err.Error())
 	}
 	if rsp.Status != grafanaOK {
-		return board, fmt.Errorf("Grafana operation failed while calling to API NewDashboard(api/dashboards/db), error: %s", rsp.Message)
+		return board, &NewDashboardError{Err: fmt.Errorf("Grafana operation failed while calling to API NewDashboard(api/dashboards/db), error: %s", rsp.Message), Status: rsp.Status}
+
 	}
 	board.ID = rsp.ID
 	board.UID = rsp.UID
