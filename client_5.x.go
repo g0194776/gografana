@@ -137,6 +137,42 @@ func (gc *GrafanaClient_5_0) GetDashboardDetails(uid string) (*Board, error) {
 	return &rsp.Dashboard, nil
 }
 
+func (gc *GrafanaClient_5_0) EnsureFolderExists(folderId int, uid, title string) (int, bool, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/folders/id/%d", gc.basicAddress, folderId), nil)
+	if err != nil {
+		return -1, false, err
+	}
+	_, statusCode, err := gc.getHTTPResponseWithStatusCode(req, "GetFolderById(/api/folders/id/[FOLDER-ID])")
+	if err != nil {
+		return -1, false, err
+	}
+	//folder existed.
+	if statusCode == 200 {
+		return -1, false, nil
+	}
+	//try to create a new folder.
+	bodyReq := CreateFolderRequest{UID: uid, Title: title}
+	bodyStr, err := json.Marshal(bodyReq)
+	if err != nil {
+		return -1, false, err
+	}
+	var bodyData []byte
+	req, err = http.NewRequest("POST", fmt.Sprintf("%s/api/folders", gc.basicAddress), strings.NewReader(string(bodyStr)))
+	if err != nil {
+		return -1, false, err
+	}
+	bodyData, err = gc.getHTTPResponse(req, "CreateFolder(/api/folders)")
+	if err != nil {
+		return -1, false, err
+	}
+	var rsp CreateFolderResponse
+	err = json.Unmarshal(bodyData, &rsp)
+	if err != nil {
+		return -1, false, fmt.Errorf("Unmarshal response body failed while calling to API CreateFolder(/api/folders), error: %s", err.Error())
+	}
+	return rsp.ID, true, nil
+}
+
 func (gc *GrafanaClient_5_0) getHTTPResponse(req *http.Request, flag string) ([]byte, error) {
 	gc.initClient()
 	//加入统一授权
@@ -155,4 +191,27 @@ func (gc *GrafanaClient_5_0) getHTTPResponse(req *http.Request, flag string) ([]
 		return nil, fmt.Errorf("Remote API returned Non 200/OK status code in the %s response(%d), body: %s", flag, rsp.StatusCode, string(bodyData))
 	}
 	return bodyData, nil
+}
+
+func (gc *GrafanaClient_5_0) getHTTPResponseWithStatusCode(req *http.Request, flag string) ([]byte, int, error) {
+	gc.initClient()
+	//加入统一授权
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", gc.token))
+	req.Header.Add("Content-Type", "application/json")
+	rsp, err := gc.client.Do(req)
+	if err != nil {
+		return nil, -1, err
+	}
+	defer rsp.Body.Close()
+	bodyData, err := ioutil.ReadAll(rsp.Body)
+	if err != nil {
+		return nil, -1, fmt.Errorf("Read response body failed while calling to API %s, error: %s", flag, err.Error())
+	}
+	if rsp.StatusCode == 404 {
+		return nil, 404, nil
+	}
+	if rsp.StatusCode != 200 {
+		return nil, rsp.StatusCode, fmt.Errorf("Remote API returned Non 200/OK status code in the %s response(%d), body: %s", flag, rsp.StatusCode, string(bodyData))
+	}
+	return bodyData, -1, nil
 }
