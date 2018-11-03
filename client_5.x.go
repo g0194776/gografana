@@ -213,5 +213,5 @@ func (gc *GrafanaClient_5_0) getHTTPResponseWithStatusCode(req *http.Request, fl
 	if rsp.StatusCode != 200 {
 		return nil, rsp.StatusCode, fmt.Errorf("Remote API returned Non 200/OK status code in the %s response(%d), body: %s", flag, rsp.StatusCode, string(bodyData))
 	}
-	return bodyData, -1, nil
+	return bodyData, rsp.StatusCode, nil
 }
