@@ -50,6 +50,24 @@ func (gc *GrafanaClient_5_0) GetAllDashboards() ([]Board, error) {
 	return boards, nil
 }
 
+func (gc *GrafanaClient_5_0) GetDashboardsByFolderId(folderId int) ([]Board, error) {
+	urlPath := fmt.Sprintf("%s/api/search?folderIds=%d", gc.basicAddress, folderId)
+	req, err := http.NewRequest("GET", urlPath, nil)
+	if err != nil {
+		return nil, err
+	}
+	bodyData, err := gc.getHTTPResponse(req, "GetAllDashboards(api/search?type=folderIds)")
+	if err != nil {
+		return nil, err
+	}
+	var boards []Board
+	err = json.Unmarshal(bodyData, &boards)
+	if err != nil {
+		return nil, fmt.Errorf("Unmarshal response body failed while calling to API GetAllDashboards(api/search?type=folderIds), error: %s", err.Error())
+	}
+	return boards, nil
+}
+
 func (gc *GrafanaClient_5_0) IsBoardExists(title string) (bool, *Board, error) {
 	boards, err := gc.GetAllDashboards()
 	if err != nil {
