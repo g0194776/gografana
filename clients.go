@@ -27,4 +27,9 @@ type GrafanaClienter interface {
 	DeleteDashboard(uid string) (bool, error)
 	GetDashboardDetails(uid string) (*Board, error)
 	EnsureFolderExists(folderId int, uid, title string) (int, bool, error)
+	//DATA SOURCE
+	GetAllDataSources() ([]*DataSource, error)
+	GetDashSourceById(id int) (*DataSource, error)
+	DeleteDashSource(id int) error
+	CreateDashSource(ds *DataSource) error
 }

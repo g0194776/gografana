@@ -182,3 +182,27 @@ type GetDashboardByUIdResponse struct {
 	} `json:"meta"`
 	Dashboard Board `json:"dashboard"`
 }
+
+type DataSource struct {
+	ID          int               `json:"id"`
+	OrgID       int               `json:"orgId"`
+	Name        string            `json:"name"`
+	Type        string            `json:"type"`
+	TypeLogoURL string            `json:"typeLogoUrl"`
+	Access      string            `json:"access"`
+	URL         string            `json:"url"`
+	Password    string            `json:"password"`
+	User        string            `json:"user"`
+	Database    string            `json:"database"`
+	BasicAuth   bool              `json:"basicAuth"`
+	IsDefault   bool              `json:"isDefault"`
+	JSONData    map[string]string `json:"jsonData"`
+	ReadOnly    bool              `json:"readOnly"`
+}
+
+type CreateDataSourceResponse struct {
+	DataSource *DataSource `json:"datasource"`
+	ID         int         `json:"id"`
+	Message    string      `json:"message"`
+	Name       string      `json:"name"`
+}

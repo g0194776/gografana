@@ -233,3 +233,74 @@ func (gc *GrafanaClient_5_0) getHTTPResponseWithStatusCode(req *http.Request, fl
 	}
 	return bodyData, rsp.StatusCode, nil
 }
+
+func (gc *GrafanaClient_5_0) GetAllDataSources() ([]*DataSource, error) {
+	urlPath := fmt.Sprintf("%s/api/datasources", gc.basicAddress)
+	req, err := http.NewRequest("GET", urlPath, nil)
+	if err != nil {
+		return nil, err
+	}
+	bodyData, err := gc.getHTTPResponse(req, "GetAllDataSources(api/datasources)")
+	if err != nil {
+		return nil, err
+	}
+	var ds []*DataSource
+	err = json.Unmarshal(bodyData, &ds)
+	if err != nil {
+		return nil, fmt.Errorf("Unmarshal response body failed while calling to API GetAllDataSources(api/datasources), error: %s", err.Error())
+	}
+	return ds, nil
+}
+
+func (gc *GrafanaClient_5_0) GetDashSourceById(id int) (*DataSource, error) {
+	urlPath := fmt.Sprintf("%s/api/datasources/%d", gc.basicAddress, id)
+	req, err := http.NewRequest("GET", urlPath, nil)
+	if err != nil {
+		return nil, err
+	}
+	bodyData, err := gc.getHTTPResponse(req, "GetDashSourceById(api/datasources)")
+	if err != nil {
+		return nil, err
+	}
+	var ds DataSource
+	err = json.Unmarshal(bodyData, &ds)
+	if err != nil {
+		return nil, fmt.Errorf("Unmarshal response body failed while calling to API GetDashSourceById(api/datasources), error: %s", err.Error())
+	}
+	return &ds, nil
+}
+
+func (gc *GrafanaClient_5_0) DeleteDashSource(id int) error {
+	urlPath := fmt.Sprintf("%s/api/datasources/%d", gc.basicAddress, id)
+	req, err := http.NewRequest("DELETE", urlPath, nil)
+	if err != nil {
+		return err
+	}
+	_, err = gc.getHTTPResponse(req, "DeleteDashSource(api/datasources)")
+	return err
+}
+
+func (gc *GrafanaClient_5_0) CreateDashSource(ds *DataSource) error {
+	bodyStr, err := json.Marshal(ds)
+	if err != nil {
+		return err
+	}
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/api/datasources", gc.basicAddress), strings.NewReader(string(bodyStr)))
+	if err != nil {
+		return err
+	}
+	rspBody, statusCode, err := gc.getHTTPResponseWithStatusCode(req, "CreateDashSource(api/datasources)")
+	if err != nil {
+		return err
+	}
+	if statusCode != 200 {
+		return fmt.Errorf("HTTP Response != 200 while calling to API CreateDashSource(api/datasources), error: %s", err.Error())
+	}
+	var rsp CreateDataSourceResponse
+	err = json.Unmarshal(rspBody, &rsp)
+	if err != nil {
+		return fmt.Errorf("Unmarshal response body failed while calling to API CreateDashSource(api/datasources), error: %s", err.Error())
+	}
+	ds.ID = rsp.ID
+	return nil
+}
