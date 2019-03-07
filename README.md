@@ -6,7 +6,8 @@
 目前市面上针对Grafana v5.x Golang版本的API并不多，而且都不好用。我们的需求是要通过client动态创建dashboard和panels。在第一个版本中`测试通过`，我基本上实现了这个思路，可以支持如下功能:
 
 - 列举所有存在的Dashboard
-- 根据FolderId来获取所有Dashboard列表 `本次更新新增`
+- 根据FolderId来获取所有Dashboard列表
+- 增加对数据源的管理 `本次更新新增`
 - 根据UID获取指定Dashboard的详细信息
 - 查看指定Dashboard是否存在
 - 根据UID删除指定Dashboard
