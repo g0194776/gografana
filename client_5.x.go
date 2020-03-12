@@ -304,3 +304,21 @@ func (gc *GrafanaClient_5_0) CreateDashSource(ds *DataSource) error {
 	ds.ID = rsp.ID
 	return nil
 }
+
+func (gc *GrafanaClient_5_0) GetAllFolders() ([]Folder, error) {
+	urlPath := fmt.Sprintf("%s/api/folders?limit=10000", gc.basicAddress)
+	req, err := http.NewRequest("GET", urlPath, nil)
+	if err != nil {
+		return nil, err
+	}
+	bodyData, err := gc.getHTTPResponse(req, "GetAllFolders(api/folders?limit=10000)")
+	if err != nil {
+		return nil, err
+	}
+	var folders []Folder
+	err = json.Unmarshal(bodyData, &folders)
+	if err != nil {
+		return nil, fmt.Errorf("Unmarshal response body failed while calling to API GetAllDashboards(api/search?type=dash-db), error: %s", err.Error())
+	}
+	return folders, nil
+}
