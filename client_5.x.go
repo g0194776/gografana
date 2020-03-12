@@ -11,9 +11,9 @@ import (
 const grafanaOK string = "success"
 
 type GrafanaClient_5_0 struct {
-	basicAddress string
-	token        string
-	client       *http.Client
+	basicAddress  string
+	client        *http.Client
+	authenticator Authenticator
 }
 
 type NewDashboardError struct {
@@ -194,7 +194,7 @@ func (gc *GrafanaClient_5_0) EnsureFolderExists(folderId int, uid, title string)
 func (gc *GrafanaClient_5_0) getHTTPResponse(req *http.Request, flag string) ([]byte, error) {
 	gc.initClient()
 	//加入统一授权
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", gc.token))
+	gc.authenticator.SetAuthentication(req)
 	req.Header.Add("Content-Type", "application/json")
 	rsp, err := gc.client.Do(req)
 	if err != nil {
@@ -214,7 +214,7 @@ func (gc *GrafanaClient_5_0) getHTTPResponse(req *http.Request, flag string) ([]
 func (gc *GrafanaClient_5_0) getHTTPResponseWithStatusCode(req *http.Request, flag string) ([]byte, int, error) {
 	gc.initClient()
 	//加入统一授权
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", gc.token))
+	gc.authenticator.SetAuthentication(req)
 	req.Header.Add("Content-Type", "application/json")
 	rsp, err := gc.client.Do(req)
 	if err != nil {

@@ -1,21 +1,21 @@
 package gografana
 
 var (
-	clients map[string]func(string, string) GrafanaClienter
+	clients map[string]func(string, Authenticator) GrafanaClienter
 )
 
 //根据Grafana的版本号来获取指定的Client
-func GetClientByVersion(version, apiAddress, apikey string) (GrafanaClienter, error) {
+func GetClientByVersion(version, apiAddress string, auth Authenticator) (GrafanaClienter, error) {
 	if v, ok := clients[version]; ok {
-		return v(apiAddress, apikey), nil
+		return v(apiAddress, auth), nil
 	}
 	return nil, ErrNoSpecifiedVerClient{}
 }
 
 func init() {
-	clients = make(map[string]func(string, string) GrafanaClienter)
-	clients["5.x"] = func(apiAddress, token string) GrafanaClienter {
-		return &GrafanaClient_5_0{basicAddress: apiAddress, token: token}
+	clients = make(map[string]func(string, Authenticator) GrafanaClienter)
+	clients["5.x"] = func(apiAddress string, auth Authenticator) GrafanaClienter {
+		return &GrafanaClient_5_0{basicAddress: apiAddress, authenticator: auth}
 	}
 }
 
