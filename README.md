@@ -19,7 +19,9 @@
 
 考虑到Grafana多版本间的API参数变化，这次代码的设计在理论上是可以支持多个Grafana版本的，主要设计点在于获取Grafana的Client是通过version来获取的，如下code:
 ```golang
-client, err := gografana.GetClientByVersion("5.x", "http://x.x.x.x:3000", "xxxxxxxxxxxxxxxxx")
+//在新的API设计中，这里需要传入一个Authenticator接口实例用于告知client走哪种鉴权方式
+auth := gografana.NewBasicAuthenticator("YOUR-USRENAME", "YOUR-PASSWORD")
+client, err := gografana.GetClientByVersion("5.x", "http://x.x.x.x:3000", auth)
 if err != nil {
   panic(err)
 }
