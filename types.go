@@ -125,13 +125,14 @@ type Panel_5_0 struct {
 	} `json:"gridPos,omitempty"`
 	ID     int `json:"id"`
 	Legend struct {
-		Avg     bool `json:"avg"`
-		Current bool `json:"current"`
-		Max     bool `json:"max"`
-		Min     bool `json:"min"`
-		Show    bool `json:"show"`
-		Total   bool `json:"total"`
-		Values  bool `json:"values"`
+		Avg          bool `json:"avg"`
+		Current      bool `json:"current"`
+		Max          bool `json:"max"`
+		Min          bool `json:"min"`
+		Show         bool `json:"show"`
+		Total        bool `json:"total"`
+		Values       bool `json:"values"`
+		AlignAsTable bool `json:"alignAsTable"`
 	} `json:"legend,omitempty"`
 	Lines           bool          `json:"lines"`
 	Linewidth       int           `json:"linewidth"`
