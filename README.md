@@ -30,7 +30,9 @@ if err != nil {
 这看起来很妙，不是吗？通过传递远程Grafana服务期端的版本，就可以从内部生成出对应的client实例来，从而也就解决了多版本参数不兼容的问题。如下代码，是经过测试的，用于通过client来生成动态Dashboard以及Panels:
 
 ```golang
-client, err := gografana.GetClientByVersion("5.x", "http://x.x.x.x:3000", "xxxxxxxxxxxxxxxxx")
+//在新的API设计中，这里需要传入一个Authenticator接口实例用于告知client走哪种鉴权方式
+auth := gografana.NewBasicAuthenticator("YOUR-USRENAME", "YOUR-PASSWORD")
+client, err := gografana.GetClientByVersion("5.x", "http://x.x.x.x:3000", auth)
 if err != nil {
   panic(err)
 }
