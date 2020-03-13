@@ -86,8 +86,8 @@ type Panel_5_0 struct {
 		} `json:"alertRuleTags"`
 		Conditions []struct {
 			Evaluator struct {
-				Params []int  `json:"params"`
-				Type   string `json:"type"`
+				Params []int64 `json:"params"`
+				Type   string  `json:"type"`
 			} `json:"evaluator"`
 			Operator struct {
 				Type string `json:"type"`
