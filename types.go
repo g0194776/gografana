@@ -81,6 +81,37 @@ type CreateDashboardResponse struct {
 type Panel_5_0 struct {
 	AliasColors struct {
 	} `json:"aliasColors"`
+	Alert struct {
+		AlertRuleTags struct {
+		} `json:"alertRuleTags"`
+		Conditions []struct {
+			Evaluator struct {
+				Params []int  `json:"params"`
+				Type   string `json:"type"`
+			} `json:"evaluator"`
+			Operator struct {
+				Type string `json:"type"`
+			} `json:"operator"`
+			Query struct {
+				Params []string `json:"params"`
+			} `json:"query"`
+			Reducer struct {
+				Params []interface{} `json:"params"`
+				Type   string        `json:"type"`
+			} `json:"reducer"`
+			Type string `json:"type"`
+		} `json:"conditions"`
+		ExecutionErrorState string `json:"executionErrorState"`
+		For                 string `json:"for"`
+		Frequency           string `json:"frequency"`
+		Handler             int    `json:"handler"`
+		Message             string `json:"message"`
+		Name                string `json:"name"`
+		NoDataState         string `json:"noDataState"`
+		Notifications       []struct {
+			UID string `json:"uid"`
+		} `json:"notifications"`
+	} `json:"alert,omitempty"`
 	Bars       bool   `json:"bars"`
 	DashLength int    `json:"dashLength"`
 	Dashes     bool   `json:"dashes"`
