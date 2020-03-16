@@ -318,7 +318,50 @@ func (gc *GrafanaClient_5_0) GetAllFolders() ([]Folder, error) {
 	var folders []Folder
 	err = json.Unmarshal(bodyData, &folders)
 	if err != nil {
-		return nil, fmt.Errorf("Unmarshal response body failed while calling to API GetAllDashboards(api/search?type=dash-db), error: %s", err.Error())
+		return nil, fmt.Errorf("Unmarshal response body failed while calling to API GetAllFolders(api/folders?limit=10000), error: %s", err.Error())
 	}
 	return folders, nil
+}
+
+func (gc *GrafanaClient_5_0) GetAllNotificationChannels() ([]NotificationChannel, error) {
+	urlPath := fmt.Sprintf("%s/api/alert-notifications", gc.basicAddress)
+	req, err := http.NewRequest("GET", urlPath, nil)
+	if err != nil {
+		return nil, err
+	}
+	bodyData, err := gc.getHTTPResponse(req, "GetAllNotificationChannels(api/alert-notifications)")
+	if err != nil {
+		return nil, err
+	}
+	var channels []NotificationChannel
+	err = json.Unmarshal(bodyData, &channels)
+	if err != nil {
+		return nil, fmt.Errorf("Unmarshal response body failed while calling to API GetAllNotificationChannels(api/alert-notifications), error: %s", err.Error())
+	}
+	return channels, nil
+}
+
+func (gc *GrafanaClient_5_0) CreateNotificationChannel(nc *NotificationChannel) error {
+	bodyStr, err := json.Marshal(nc)
+	if err != nil {
+		return err
+	}
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/api/alert-notifications", gc.basicAddress), strings.NewReader(string(bodyStr)))
+	if err != nil {
+		return err
+	}
+	rspBody, statusCode, err := gc.getHTTPResponseWithStatusCode(req, "CreateNotificationChannel(api/alert-notifications)")
+	if err != nil {
+		return err
+	}
+	if statusCode != 200 {
+		return fmt.Errorf("HTTP Response != 200 while calling to API CreateNotificationChannel(api/alert-notifications), error: %s", err.Error())
+	}
+	var rsp CreateNotificationChannelResponse
+	err = json.Unmarshal(rspBody, &rsp)
+	if err != nil {
+		return fmt.Errorf("Unmarshal response body failed while calling to API CreateNotificationChannel(api/alert-notifications), error: %s", err.Error())
+	}
+	nc.ID = rsp.ID
+	return nil
 }

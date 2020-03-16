@@ -33,4 +33,7 @@ type GrafanaClienter interface {
 	GetDashSourceById(id int) (*DataSource, error)
 	DeleteDashSource(id int) error
 	CreateDashSource(ds *DataSource) error
+	//NOTIFICATIONS
+	GetAllNotificationChannels() ([]NotificationChannel, error)
+	CreateNotificationChannel(nc *NotificationChannel) error
 }

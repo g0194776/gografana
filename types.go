@@ -239,6 +239,20 @@ type CreateDataSourceResponse struct {
 	Name       string      `json:"name"`
 }
 
+type CreateNotificationChannelResponse struct {
+	ID           int    `json:"id"`
+	UID          string `json:"uid"`
+	Name         string `json:"name"`
+	Type         string `json:"type"`
+	IsDefault    bool   `json:"isDefault"`
+	SendReminder bool   `json:"sendReminder"`
+	Settings     struct {
+		Addresses string `json:"addresses"`
+	} `json:"settings"`
+	Created time.Time `json:"created"`
+	Updated time.Time `json:"updated"`
+}
+
 type Folder struct {
 	ID        int       `json:"id"`
 	UID       string    `json:"uid"`
@@ -253,4 +267,22 @@ type Folder struct {
 	UpdatedBy string    `json:"updatedBy"`
 	Updated   time.Time `json:"updated"`
 	Version   int       `json:"version"`
+}
+
+type NotificationChannel struct {
+	ID                    int       `json:"id"`
+	Name                  string    `json:"name"`
+	Type                  string    `json:"type"`
+	IsDefault             bool      `json:"isDefault"`
+	SendReminder          bool      `json:"sendReminder"`
+	DisableResolveMessage bool      `json:"disableResolveMessage"`
+	Frequency             string    `json:"frequency"`
+	Created               time.Time `json:"created"`
+	Updated               time.Time `json:"updated"`
+	Settings              struct {
+		Addresses   string `json:"addresses"`
+		AutoResolve bool   `json:"autoResolve"`
+		HTTPMethod  string `json:"httpMethod"`
+		UploadImage bool   `json:"uploadImage"`
+	} `json:"settings"`
 }
