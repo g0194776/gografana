@@ -109,7 +109,7 @@ type Panel_5_0 struct {
 		Name                string `json:"name"`
 		NoDataState         string `json:"noDataState"`
 		Notifications       []struct {
-			UID string `json:"uid"`
+			ID int `json:"id"`
 		} `json:"notifications"`
 	} `json:"alert,omitempty"`
 	Bars       bool   `json:"bars"`
