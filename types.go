@@ -216,20 +216,20 @@ type GetDashboardByUIdResponse struct {
 }
 
 type DataSource struct {
-	ID          int               `json:"id"`
-	OrgID       int               `json:"orgId"`
-	Name        string            `json:"name"`
-	Type        string            `json:"type"`
-	TypeLogoURL string            `json:"typeLogoUrl"`
-	Access      string            `json:"access"`
-	URL         string            `json:"url"`
-	Password    string            `json:"password"`
-	User        string            `json:"user"`
-	Database    string            `json:"database"`
-	BasicAuth   bool              `json:"basicAuth"`
-	IsDefault   bool              `json:"isDefault"`
-	JSONData    map[string]string `json:"jsonData"`
-	ReadOnly    bool              `json:"readOnly"`
+	ID          int                    `json:"id"`
+	OrgID       int                    `json:"orgId"`
+	Name        string                 `json:"name"`
+	Type        string                 `json:"type"`
+	TypeLogoURL string                 `json:"typeLogoUrl"`
+	Access      string                 `json:"access"`
+	URL         string                 `json:"url"`
+	Password    string                 `json:"password"`
+	User        string                 `json:"user"`
+	Database    string                 `json:"database"`
+	BasicAuth   bool                   `json:"basicAuth"`
+	IsDefault   bool                   `json:"isDefault"`
+	JSONData    map[string]interface{} `json:"jsonData"`
+	ReadOnly    bool                   `json:"readOnly"`
 }
 
 type CreateDataSourceResponse struct {
