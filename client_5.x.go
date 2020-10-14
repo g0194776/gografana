@@ -114,6 +114,32 @@ func (gc *GrafanaClient_5_0) NewDashboard(board *Board, folderId uint, overwrite
 	return board, nil
 }
 
+func (gc *GrafanaClient_5_0) CreateAPIKey(name string, role string, secondsToLive int) (string, error) {
+	body := map[string]interface{}{
+		"name":          name,
+		"role":          role,
+		"secondsToLive": secondsToLive,
+	}
+	b, err := json.Marshal(body)
+	if err != nil {
+		return "", err
+	}
+
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/api/auth/keys", gc.basicAddress), strings.NewReader(string(b)))
+	rspBody, err := gc.getHTTPResponse(req, "CreateAPIKey(api/auth/keys)")
+	if err != nil {
+		return "", err
+	}
+
+	var rsp CreateAPIKeyResponse
+	err = json.Unmarshal(rspBody, &rsp)
+	if err != nil {
+		return "", fmt.Errorf("unmarshal response body failed while calling to API CreateAPIKey(api/auth/keys), error: %s", err.Error())
+	}
+
+	return rsp.Key, nil
+}
+
 // Status Codes:
 //-------------------
 // 200 – Deleted
@@ -189,6 +215,23 @@ func (gc *GrafanaClient_5_0) EnsureFolderExists(folderId int, uid, title string)
 		return -1, false, fmt.Errorf("Unmarshal response body failed while calling to API CreateFolder(/api/folders), error: %s", err.Error())
 	}
 	return rsp.ID, true, nil
+}
+
+func (gc *GrafanaClient_5_0) GetFolderId(folderName string) (int, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/search?query=%s", gc.basicAddress, folderName), nil)
+	if err != nil {
+		return -1, err
+	}
+	bodyData, err := gc.getHTTPResponse(req, "GetFolderId(/api/search)")
+	if err != nil {
+		return -1, err
+	}
+	var rsp GetFolderIdResponse
+	err = json.Unmarshal(bodyData, &rsp)
+	if err != nil {
+		return -1, fmt.Errorf("unmarshal response body failed while calling to API GetFolderId(/api/search), error: %s", err.Error())
+	}
+	return rsp.ID, nil
 }
 
 func (gc *GrafanaClient_5_0) getHTTPResponse(req *http.Request, flag string) ([]byte, error) {

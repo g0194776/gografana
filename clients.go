@@ -22,12 +22,14 @@ func init() {
 type GrafanaClienter interface {
 	GetAllDashboards() ([]Board, error)
 	GetAllFolders() ([]Folder, error)
+	GetFolderId(folderName string) (int, error)
 	GetDashboardsByFolderId(folderId int) ([]Board, error)
 	IsBoardExists(title string) (bool, *Board, error)
 	NewDashboard(board *Board, folderId uint, overwrite bool) (*Board, error)
 	DeleteDashboard(uid string) (bool, error)
 	GetDashboardDetails(uid string) (*Board, error)
 	EnsureFolderExists(folderId int, uid, title string) (int, bool, error)
+	CreateAPIKey(name string, role string, secondsToLive int) (string, error)
 	//DATA SOURCE
 	GetAllDataSources() ([]*DataSource, error)
 	GetDashSourceById(id int) (*DataSource, error)
