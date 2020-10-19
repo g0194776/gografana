@@ -243,23 +243,6 @@ func (gc *GrafanaClient_5_0) EnsureFolderExists(folderId int, uid, title string)
 	return rsp.ID, true, nil
 }
 
-func (gc *GrafanaClient_5_0) GetFolderId(folderName string) (int, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/search?query=%s", gc.basicAddress, folderName), nil)
-	if err != nil {
-		return -1, err
-	}
-	bodyData, err := gc.getHTTPResponse(req, "GetFolderId(/api/search)")
-	if err != nil {
-		return -1, err
-	}
-	var rsp GetFolderIdResponse
-	err = json.Unmarshal(bodyData, &rsp)
-	if err != nil {
-		return -1, fmt.Errorf("unmarshal response body failed while calling to API GetFolderId(/api/search), error: %s", err.Error())
-	}
-	return rsp.ID, nil
-}
-
 func (gc *GrafanaClient_5_0) getHTTPResponse(req *http.Request, flag string) ([]byte, error) {
 	gc.initClient()
 	//加入统一授权
