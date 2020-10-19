@@ -154,6 +154,18 @@ func (gc *GrafanaClient_5_0) FindAllAPIKeys() ([]APIKey, error) {
 	return apiKeys, nil
 }
 
+func (gc *GrafanaClient_5_0) DeleteAPIKey(id int) (bool, error) {
+	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/api/auth/keys/%d", gc.basicAddress, id), nil)
+	if err != nil {
+		return false, err
+	}
+	_, err = gc.getHTTPResponse(req, "DeleteAPIKey(api/auth/keys/[ID])")
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // Status Codes:
 //-------------------
 // 200 – Deleted
