@@ -53,18 +53,6 @@ type CreateFolderResponse struct {
 	Version   int       `json:"version"`
 }
 
-type GetFolderIdResponse struct {
-	ID        int      `json:"id"`
-	UID       string   `json:"uid"`
-	Title     string   `json:"title"`
-	URI       string   `json:"uri"`
-	URL       string   `json:"url"`
-	Slug      string   `json:"slug"`
-	Type      string   `json:"type"`
-	Tags      []string `json:"tags"`
-	IsStarred bool     `json:"isStarred"`
-}
-
 type CreateAPIKeyResponse struct {
 	Name string `json:"name"`
 	Key  string `json:"key"`
