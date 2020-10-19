@@ -114,6 +114,58 @@ func (gc *GrafanaClient_5_0) NewDashboard(board *Board, folderId uint, overwrite
 	return board, nil
 }
 
+func (gc *GrafanaClient_5_0) CreateAPIKey(name string, role string, secondsToLive int) (string, error) {
+	body := map[string]interface{}{
+		"name":          name,
+		"role":          role,
+		"secondsToLive": secondsToLive,
+	}
+	b, err := json.Marshal(body)
+	if err != nil {
+		return "", err
+	}
+
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/api/auth/keys", gc.basicAddress), strings.NewReader(string(b)))
+	rspBody, err := gc.getHTTPResponse(req, "CreateAPIKey(api/auth/keys)")
+	if err != nil {
+		return "", err
+	}
+
+	var rsp CreateAPIKeyResponse
+	err = json.Unmarshal(rspBody, &rsp)
+	if err != nil {
+		return "", fmt.Errorf("unmarshal response body failed while calling to API CreateAPIKey(api/auth/keys), error: %s", err.Error())
+	}
+
+	return rsp.Key, nil
+}
+
+func (gc *GrafanaClient_5_0) FindAllAPIKeys() ([]APIKey, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/auth/keys", gc.basicAddress), nil)
+	rspBody, err := gc.getHTTPResponse(req, "GetAllAPIKeys(api/auth/keys)")
+	if err != nil {
+		return nil, err
+	}
+	var apiKeys []APIKey
+	err = json.Unmarshal(rspBody, &apiKeys)
+	if err != nil {
+		return nil, fmt.Errorf("Unmarshal response body failed while calling to API GetAllAPIKeys(api/auth/keys), error: %s", err.Error())
+	}
+	return apiKeys, nil
+}
+
+func (gc *GrafanaClient_5_0) DeleteAPIKey(id int) (bool, error) {
+	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/api/auth/keys/%d", gc.basicAddress, id), nil)
+	if err != nil {
+		return false, err
+	}
+	_, err = gc.getHTTPResponse(req, "DeleteAPIKey(api/auth/keys/[ID])")
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // Status Codes:
 //-------------------
 // 200 – Deleted

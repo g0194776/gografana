@@ -53,6 +53,11 @@ type CreateFolderResponse struct {
 	Version   int       `json:"version"`
 }
 
+type CreateAPIKeyResponse struct {
+	Name string `json:"name"`
+	Key  string `json:"key"`
+}
+
 /*
 Status Codes:
 ---------------
@@ -251,6 +256,12 @@ type CreateNotificationChannelResponse struct {
 	} `json:"settings"`
 	Created time.Time `json:"created"`
 	Updated time.Time `json:"updated"`
+}
+
+type APIKey struct {
+	ID int `json:"id"`
+	Name string `json:"name"`
+	Role string `json:"role"`
 }
 
 type Folder struct {
