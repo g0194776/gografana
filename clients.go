@@ -30,6 +30,7 @@ type GrafanaClienter interface {
 	GetDashboardDetails(uid string) (*Board, error)
 	EnsureFolderExists(folderId int, uid, title string) (int, bool, error)
 	CreateAPIKey(name string, role string, secondsToLive int) (string, error)
+	FindAllAPIKeys() ([]APIKey, error)
 	//DATA SOURCE
 	GetAllDataSources() ([]*DataSource, error)
 	GetDashSourceById(id int) (*DataSource, error)

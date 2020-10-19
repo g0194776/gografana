@@ -140,6 +140,20 @@ func (gc *GrafanaClient_5_0) CreateAPIKey(name string, role string, secondsToLiv
 	return rsp.Key, nil
 }
 
+func (gc *GrafanaClient_5_0) FindAllAPIKeys() ([]APIKey, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/auth/keys", gc.basicAddress), nil)
+	rspBody, err := gc.getHTTPResponse(req, "GetAllAPIKeys(api/auth/keys)")
+	if err != nil {
+		return nil, err
+	}
+	var apiKeys []APIKey
+	err = json.Unmarshal(rspBody, &apiKeys)
+	if err != nil {
+		return nil, fmt.Errorf("Unmarshal response body failed while calling to API GetAllAPIKeys(api/auth/keys), error: %s", err.Error())
+	}
+	return apiKeys, nil
+}
+
 // Status Codes:
 //-------------------
 // 200 – Deleted

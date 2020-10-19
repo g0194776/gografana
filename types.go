@@ -270,6 +270,12 @@ type CreateNotificationChannelResponse struct {
 	Updated time.Time `json:"updated"`
 }
 
+type APIKey struct {
+	ID int `json:"id"`
+	Name string `json:"name"`
+	Role string `json:"role"`
+}
+
 type Folder struct {
 	ID        int       `json:"id"`
 	UID       string    `json:"uid"`
