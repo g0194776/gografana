@@ -191,6 +191,10 @@ type Panel_5_0 struct {
 
 func (p *Panel_5_0) MarshalJSON() ([]byte, error) {
 	type Alias Panel_5_0
+	aliasColors := map[string]string{}
+	if p.AliasColors == nil {
+		aliasColors = p.AliasColors
+	}
 	return json.Marshal(&struct {
 		AliasColors map[string]string `json:"aliasColors"`
 		*Alias
