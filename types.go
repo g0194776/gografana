@@ -199,7 +199,7 @@ func (p *Panel_5_0) MarshalJSON() ([]byte, error) {
 		AliasColors map[string]string `json:"aliasColors"`
 		*Alias
 	}{
-		AliasColors: map[string]string{},
+		AliasColors: aliasColors,
 		Alias:       (*Alias)(p),
 	})
 }
