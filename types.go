@@ -1,6 +1,9 @@
 package gografana
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 // Board represents Grafana dashboard.
 type Board struct {
@@ -184,6 +187,13 @@ type Panel_5_0 struct {
 		Min     interface{} `json:"min"`
 		Show    bool        `json:"show"`
 	} `json:"yaxes,omitempty"`
+}
+
+func (p Panel_5_0) MarshalJSON() ([]byte, error) {
+	if p.AliasColors == nil {
+		p.AliasColors = map[string]string{}
+	}
+	return json.Marshal(p)
 }
 
 type Row struct {
