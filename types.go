@@ -84,7 +84,7 @@ type CreateDashboardResponse struct {
 }
 
 type Panel_5_0 struct {
-	AliasColors map[string]string `json:"aliasColors" default:"{}"`
+	AliasColors map[string]string `json:"aliasColors"`
 	Alert       *struct {
 		AlertRuleTags struct {
 		} `json:"alertRuleTags"`
