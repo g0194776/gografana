@@ -189,7 +189,7 @@ type Panel_5_0 struct {
 	} `json:"yaxes,omitempty"`
 }
 
-func (p Panel_5_0) MarshalJSON() ([]byte, error) {
+func (p *Panel_5_0) MarshalJSON() ([]byte, error) {
 	if p.AliasColors == nil {
 		p.AliasColors = map[string]string{}
 	}
