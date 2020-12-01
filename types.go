@@ -84,9 +84,8 @@ type CreateDashboardResponse struct {
 }
 
 type Panel_5_0 struct {
-	AliasColors struct {
-	} `json:"aliasColors"`
-	Alert *struct {
+	AliasColors map[string]string `json:"aliasColors"`
+	Alert       *struct {
 		AlertRuleTags struct {
 		} `json:"alertRuleTags"`
 		Conditions []struct {
@@ -259,7 +258,7 @@ type CreateNotificationChannelResponse struct {
 }
 
 type APIKey struct {
-	ID int `json:"id"`
+	ID   int    `json:"id"`
 	Name string `json:"name"`
 	Role string `json:"role"`
 }
