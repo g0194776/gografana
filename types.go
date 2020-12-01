@@ -2,7 +2,6 @@ package gografana
 
 import (
 	"encoding/json"
-	"fmt"
 	"time"
 )
 
@@ -191,10 +190,10 @@ type Panel_5_0 struct {
 }
 
 func (p *Panel_5_0) MarshalJSON() ([]byte, error) {
-	if p.AliasColors == nil {
-		fmt.Println("aliasColors is nil")
-		// p.AliasColors = map[string]string{}
-	}
+	// if p.AliasColors == nil {
+	// 	fmt.Println("aliasColors is nil")
+	// 	// p.AliasColors = map[string]string{}
+	// }
 	return json.Marshal(p)
 }
 
