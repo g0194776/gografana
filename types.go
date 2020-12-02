@@ -1,6 +1,9 @@
 package gografana
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 // Board represents Grafana dashboard.
 type Board struct {
@@ -84,9 +87,8 @@ type CreateDashboardResponse struct {
 }
 
 type Panel_5_0 struct {
-	AliasColors struct {
-	} `json:"aliasColors"`
-	Alert *struct {
+	AliasColors map[string]string `json:"aliasColors"`
+	Alert       *struct {
 		AlertRuleTags struct {
 		} `json:"alertRuleTags"`
 		Conditions []struct {
@@ -187,6 +189,21 @@ type Panel_5_0 struct {
 	} `json:"yaxes,omitempty"`
 }
 
+func (p *Panel_5_0) MarshalJSON() ([]byte, error) {
+	type Alias Panel_5_0
+	aliasColors := map[string]string{}
+	if p.AliasColors != nil {
+		aliasColors = p.AliasColors
+	}
+	return json.Marshal(&struct {
+		AliasColors map[string]string `json:"aliasColors"`
+		*Alias
+	}{
+		AliasColors: aliasColors,
+		Alias:       (*Alias)(p),
+	})
+}
+
 type Row struct {
 	Title     string      `json:"title"`
 	ShowTitle bool        `json:"showTitle"`
@@ -259,7 +276,7 @@ type CreateNotificationChannelResponse struct {
 }
 
 type APIKey struct {
-	ID int `json:"id"`
+	ID   int    `json:"id"`
 	Name string `json:"name"`
 	Role string `json:"role"`
 }
