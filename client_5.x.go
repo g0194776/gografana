@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -52,12 +53,12 @@ func (gc *GrafanaClient_5_0) GetAllDashboards() ([]Board, error) {
 
 
 func (gc *GrafanaClient_5_0) GetDashboardsByTitleAndFolderId(title string, folderId int) ([]Board, error) {
-	urlPath := fmt.Sprintf("%s/api/search?query=%s&folderIds=%s", gc.basicAddress, title, string(folderId))
+	urlPath := fmt.Sprintf("%s/api/search?query=%s&folderIds=%s", gc.basicAddress, title, strconv.Itoa(folderId))
 	req, err := http.NewRequest("GET", urlPath, nil)
 	if err != nil {
 		return nil, err
 	}
-	bodyData, err := gc.getHTTPResponse(req, "GetDashboardsByTitleAndFolderId(api/search?query=&folerIds=)")
+	bodyData, err := gc.getHTTPResponse(req, "GetDashboardsByTitleAndFolderId(api/search?query=&folderIds=)")
 	if err != nil {
 		return nil, err
 	}
