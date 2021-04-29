@@ -1,6 +1,7 @@
 package gografana
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -30,7 +31,10 @@ func (gc *GrafanaClient_5_0) initClient() {
 	if gc.client != nil {
 		return
 	}
-	gc.client = &http.Client{}
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	gc.client = &http.Client{Transport: tr}
 }
 
 func (gc *GrafanaClient_5_0) GetAllDashboards() ([]Board, error) {
