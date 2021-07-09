@@ -1,21 +1,29 @@
 package gografana
 
 var (
-	clients map[string]func(string, Authenticator) GrafanaClienter
+	clients map[string]func(string, string, Authenticator) GrafanaClienter
 )
 
 //根据Grafana的版本号来获取指定的Client
 func GetClientByVersion(version, apiAddress string, auth Authenticator) (GrafanaClienter, error) {
 	if v, ok := clients[version]; ok {
-		return v(apiAddress, auth), nil
+		return v(apiAddress, "", auth), nil
+	}
+	return nil, ErrNoSpecifiedVerClient{}
+}
+
+//根据Grafana的版本号来获取指定的Client，并设置 http proxy
+func GetClientByVersionWithProxy(version, apiAddress, httpProxy string, auth Authenticator) (GrafanaClienter, error) {
+	if v, ok := clients[version]; ok {
+		return v(apiAddress, httpProxy, auth), nil
 	}
 	return nil, ErrNoSpecifiedVerClient{}
 }
 
 func init() {
-	clients = make(map[string]func(string, Authenticator) GrafanaClienter)
-	clients["5.x"] = func(apiAddress string, auth Authenticator) GrafanaClienter {
-		return &GrafanaClient_5_0{basicAddress: apiAddress, authenticator: auth}
+	clients = make(map[string]func(string, string, Authenticator) GrafanaClienter)
+	clients["5.x"] = func(apiAddress string, httpProxy string, auth Authenticator) GrafanaClienter {
+		return &GrafanaClient_5_0{basicAddress: apiAddress, authenticator: auth, httpProxy: httpProxy}
 	}
 }
 

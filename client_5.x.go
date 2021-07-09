@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -16,6 +17,7 @@ type GrafanaClient_5_0 struct {
 	basicAddress  string
 	client        *http.Client
 	authenticator Authenticator
+	httpProxy     string
 }
 
 type NewDashboardError struct {
@@ -27,14 +29,22 @@ func (e NewDashboardError) Error() string {
 	return fmt.Sprintf("Internal Error: %s, Status: %s", e.Err.Error(), e.Status)
 }
 
-func (gc *GrafanaClient_5_0) initClient() {
+func (gc *GrafanaClient_5_0) initClient() error {
 	if gc.client != nil {
-		return
+		return nil
 	}
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
+	if gc.httpProxy != "" {
+		proxyUrl, err := url.Parse(gc.httpProxy)
+		if err != nil {
+			return err
+		}
+		tr.Proxy = http.ProxyURL(proxyUrl)
+	}
 	gc.client = &http.Client{Transport: tr}
+	return nil
 }
 
 func (gc *GrafanaClient_5_0) GetAllDashboards() ([]Board, error) {
@@ -54,7 +64,6 @@ func (gc *GrafanaClient_5_0) GetAllDashboards() ([]Board, error) {
 	}
 	return boards, nil
 }
-
 
 func (gc *GrafanaClient_5_0) GetDashboardsByTitleAndFolderId(title string, folderId int) ([]Board, error) {
 	urlPath := fmt.Sprintf("%s/api/search?query=%s&folderIds=%s", gc.basicAddress, title, strconv.Itoa(folderId))
@@ -268,7 +277,11 @@ func (gc *GrafanaClient_5_0) EnsureFolderExists(folderId int, uid, title string)
 }
 
 func (gc *GrafanaClient_5_0) getHTTPResponse(req *http.Request, flag string) ([]byte, error) {
-	gc.initClient()
+	err := gc.initClient()
+	if err != nil {
+		return nil, err
+	}
+
 	//加入统一授权
 	gc.authenticator.SetAuthentication(req)
 	req.Header.Add("Content-Type", "application/json")
@@ -288,7 +301,11 @@ func (gc *GrafanaClient_5_0) getHTTPResponse(req *http.Request, flag string) ([]
 }
 
 func (gc *GrafanaClient_5_0) getHTTPResponseWithStatusCode(req *http.Request, flag string) ([]byte, int, error) {
-	gc.initClient()
+	err := gc.initClient()
+	if err != nil {
+		return nil, -1, err
+	}
+
 	//加入统一授权
 	gc.authenticator.SetAuthentication(req)
 	req.Header.Add("Content-Type", "application/json")
