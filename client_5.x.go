@@ -44,6 +44,7 @@ func (gc *GrafanaClient_5_0) initClient() error {
 		tr.Proxy = http.ProxyURL(proxyUrl)
 	}
 	gc.client = &http.Client{Transport: tr}
+	return nil
 }
 
 func (gc *GrafanaClient_5_0) GetAllDashboards() ([]Board, error) {
